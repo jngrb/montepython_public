@@ -227,12 +227,12 @@ def create_output_files(command_line, data):
                 suffix += 1
         data.out_name = os.path.join(
             command_line.folder, outname_base)+str(suffix)+'.txt'
-        warnings.warn('Creating %s\n' % data.out_name)
+        print 'Creating %s\n' % data.out_name
     else:
         data.out_name = os.path.join(
             command_line.folder, outname_base)+command_line.chain_number+'.txt'
         data.out = open(data.out_name, 'w')
-        warnings.warn('Creating %s\n' % data.out_name)
+        print 'Creating %s\n' % data.out_name
     # in case of a restart, copying the whole thing in the new file
     if command_line.restart is not None:
         for line in open(command_line.restart, 'r'):
@@ -395,7 +395,7 @@ def lock(file, flags):
     import fcntl
     try:
         fcntl.flock(file.fileno(), flags)
-    except IOError, exc_value:
+    except IOError as exc_value:
         # The exception code varies on different systems so we'll catch
         # every IO error
         raise LockError(*exc_value)

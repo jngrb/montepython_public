@@ -219,7 +219,7 @@ class Data(object):
         if self.cosmological_module_name == 'CLASS':
             # Official version number
             common_file_path = os.path.join(
-                self.path['cosmo'], os.path.join('include', 'common.h'))
+                self.path['cosmo'], 'include', 'common.h')
             with open(common_file_path, 'r') as common_file:
                 for line in common_file:
                     if line.find('_VERSION_') != -1:
@@ -239,7 +239,10 @@ class Data(object):
                         ["git", "rev-parse", "--abbrev-ref", "HEAD"],
                         cwd=self.path['cosmo'],
                         stderr=nul_file).strip()
-            except sp.CalledProcessError:
+            except (sp.CalledProcessError, OSError):
+                # Note, OSError seems to be raised on some systems, instead of
+                # sp.CalledProcessError - which seems to be linked to the
+                # existence of os.devnull, so now both error are caught.
                 warnings.warn(
                     "Running CLASS from a non version-controlled repository")
                 self.git_version, self.git_branch = '', ''
@@ -338,7 +341,7 @@ class Data(object):
         for elem in self.experiments:
 
             folder = os.path.abspath(os.path.join(
-                path['MontePython'], os.path.join("likelihoods", "%s" % elem)))
+                path['MontePython'], "likelihoods", "%s" % elem))
             # add the folder of the likelihood to the path of libraries to...
             # ... import easily the likelihood.py program
             exec "from likelihoods.%s import %s" % (
