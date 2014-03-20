@@ -20,6 +20,8 @@ class bao_boss_aniso(Likelihood):
 
 	# self.debug, self.z, .hdif,
 	# .dafid, and .rsfid are read from the data file
+	if self.debug:
+		print "DEBUGGING enabled:", self.debug
 
 	# load the ansio likelihood
 	filepath = os.path.join(self.data_directory, self.file)

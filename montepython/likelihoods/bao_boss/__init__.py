@@ -1,5 +1,6 @@
 import os
 import numpy as np
+import montepython.io_mp as io_mp
 from montepython.likelihood_class import Likelihood
 
 
@@ -11,6 +12,12 @@ class bao_boss(Likelihood):
 
         Likelihood.__init__(self, path, data, command_line)
 
+	file_to_use = self.file
+	for experiment in data.experiments:
+	  if experiment == 'bao_boss_aniso':
+	    print "WARNING: excluding isotropic CMASS measurement"
+	    file_to_use = self.file_no_isotropic_cmass
+
         # define array for values of z and data points
         self.z = np.array([], 'float64')
         self.data = np.array([], 'float64')
@@ -18,7 +25,7 @@ class bao_boss(Likelihood):
         self.type = np.array([], 'int')
 
         # read redshifts and data points
-        for line in open(os.path.join(self.data_directory, self.file), 'r'):
+        for line in open(os.path.join(self.data_directory, file_to_use), 'r'):
             if (line.find('#') == -1):
                 self.z = np.append(self.z, float(line.split()[0]))
                 self.data = np.append(self.data, float(line.split()[1]))

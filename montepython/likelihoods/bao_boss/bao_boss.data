@@ -1,4 +1,5 @@
 # BAO data
 bao_boss.data_directory      = data.path['data']
 bao_boss.file                = 'bao_2013.txt'
+bao_boss.file_no_isotropic_cmass = 'bao_noCMASS_2013.txt'
 bao_boss.rs_rescale          = 1.
