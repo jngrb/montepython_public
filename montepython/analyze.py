@@ -554,6 +554,7 @@ def convergence(info, is_main_chain=True, files=None, param=None):
 	    faulty_lines = ['-> %s' % line for line in
 			    open(chain_file, 'r') if
 			    len(line.split()) != len(backup_names)+2]
+	    print chain_file, faulty_lines
             raise io_mp.AnalyzeError(
                 "Error while scanning %s. This file most probably contains " +
                 "an incomplete line, rendering the analysis impossible. " +

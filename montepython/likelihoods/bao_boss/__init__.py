@@ -1,5 +1,6 @@
 import os
 import numpy as np
+import warnings
 import montepython.io_mp as io_mp
 from montepython.likelihood_class import Likelihood
 
@@ -13,9 +14,17 @@ class bao_boss(Likelihood):
         Likelihood.__init__(self, path, data, command_line)
 
 	file_to_use = self.file
-	for experiment in data.experiments:
-	  if experiment == 'bao_boss_aniso':
-	    print "WARNING: excluding isotropic CMASS measurement"
+
+	# exclude the isotropic CMASS experiment when the anisotrpic measurement is also used
+	exclude_isotropic_CMASS = False
+
+	conflicting_experiments = ['bao_boss_aniso', 'bao_boss_aniso_gauss_approx']
+	for experiment in conflicting_experiments:
+	    if experiment in data.experiments:
+	        exclude_isotropic_CMASS = True
+
+	if exclude_isotropic_CMASS:
+	    warnings.warn("excluding isotropic CMASS measurement")
 	    file_to_use = self.file_no_isotropic_cmass
 
         # define array for values of z and data points

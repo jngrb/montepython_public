@@ -13,15 +13,14 @@ class bao_boss_aniso(Likelihood):
 
         Likelihood.__init__(self, path, data, command_line)
 
-	# bao_boss is not conflicting anymore
-	#for experiment in data.experiments:
-	  #if experiment == 'bao_boss':
-	    #raise io_mp.LikelihoodError('conflicting bao_boss measurments')
+	# are there conflicting experiments?
+	if 'bao_boss_aniso_gauss_approx' in data.experiments:
+	    raise io_mp.LikelihoodError('conflicting bao_boss_aniso_gauss_approx measurments')
 
 	# self.debug, self.z, .hdif,
 	# .dafid, and .rsfid are read from the data file
 	if self.debug:
-		print "DEBUGGING enabled:", self.debug
+	    print "DEBUGGING enabled:", self.debug
 
 	# load the ansio likelihood
 	filepath = os.path.join(self.data_directory, self.file)
@@ -32,6 +31,7 @@ class bao_boss_aniso(Likelihood):
 		      ('prob', np.float64)]
         print "reading BAO aniso prob data from", filepath,"..."
 	prob = np.loadtxt(filepath, delimiter=None, comments='#', skiprows=0, dtype=prob_dtype)
+        # use the faster interp.RectBivariateSpline interpolation scheme
 	#self.prob_interp = interp.interp2d(prob['alpha_perp'], prob['alpha_para'], prob['prob'],
 					   #kind='linear', copy=False, bounds_error=False, fill_value=0.0)
 	size = np.sqrt(len(prob))
@@ -60,14 +60,14 @@ class bao_boss_aniso(Likelihood):
 	alpha_para = (self.Hfid * self.rsfid) / (H * rs)
 
 	if self.debug:
-	  print alpha_perp, alpha_para
+	    print alpha_perp, alpha_para
 
 	bao_aniso_like = self.prob_interp(alpha_perp, alpha_para)[0,0]
 
         # return ln(L)
 	if bao_aniso_like > 0.0:
-	  lkl = np.log(bao_aniso_like)
+	    lkl = np.log(bao_aniso_like)
 	else:
-	  lkl = data.boundary_loglike
+	    lkl = data.boundary_loglike
 
         return lkl
