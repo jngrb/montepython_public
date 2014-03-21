@@ -550,14 +550,15 @@ def convergence(info, is_main_chain=True, files=None, param=None):
             max_lkl.append(cheese[:, 1].min())
         except IndexError:
             index = 1
+	    # JNG MOD:
+	    faulty_lines = ['-> %s' % line for line in
+			    open(chain_file, 'r') if
+			    len(line.split()) != len(backup_names)+2]
             raise io_mp.AnalyzeError(
                 "Error while scanning %s. This file most probably contains " +
                 "an incomplete line, rendering the analysis impossible. " +
                 "I think that the following line(s) is(are) wrong:\n %s" % (
-                    chain_file, '\n '.join(
-                        ['-> %s' % line for line in
-                         open(chain_file, 'r') if
-                         len(line.split()) != len(backup_names)+2])))
+                    chain_file, '\n '.join(faulty_lines) if len(faulty_lines) > 0 else ''))
 
     # beware, it is the min because we are talking about
     # '- log likelihood'
