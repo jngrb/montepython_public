@@ -765,6 +765,7 @@ def plot_triangle(
     # unless explicitely wanted by specifying '-all'
     if command_line.comp is not None:
         plot_2d = command_line.subplot
+        overplot_comp_contour = True
         comp = True
         comp_done = False
     else:
@@ -1137,10 +1138,16 @@ def plot_triangle(
 
 		    if comp_done_other:
 			try:
-			    contours = ax2dsub.contourf(
-				comp_y_centers, comp_x_centers, comp_n,
-				extent=comp_extent, levels=ctr_level(comp_n, lvls[:2]),
-				zorder=4, cmap=plt.cm.winter_r)
+			    if overplot_comp_contour:
+				contours = ax2dsub.contour(
+				    comp_y_centers, comp_x_centers, comp_n,
+				    extent=comp_extent, levels=ctr_level(comp_n, lvls[:2]),
+				    zorder=5, cmap=plt.cm.winter_r)
+			    else:
+				contours = ax2dsub.contourf(
+				    comp_y_centers, comp_x_centers, comp_n,
+				    extent=comp_extent, levels=ctr_level(comp_n, lvls[:2]),
+				    zorder=4, cmap=plt.cm.winter_r)
 			except Warning:
 			    warnings.warn(
 				"The routine could not find the contour of the " +
@@ -1150,6 +1157,9 @@ def plot_triangle(
 			    pass
 			ax2dsub.axis([x_range[second_index][0], x_range[second_index][1],
 			    x_range[index][0], x_range[index][1]])
+
+		else:
+		    comp_done_other = False
 
                 if command_line.subplot is True:
                     # Store the individual 2d plots
@@ -1186,12 +1196,24 @@ def plot_triangle(
                                 info.plotted_parameters[j]))
                         pass
 
+                    fig_temp.savefig(
+                        info.folder+'plots/{0}_2d_{1}-{2}.{3}'.format(
+                            info.folder.split('/')[-2],
+                            info.ref_names[index],
+                            info.ref_names[second_index], info.extension))
+
 		    if comp_done_other:
 			try:
-			    contours = ax_temp.contourf(
-				comp_y_centers, comp_x_centers, comp_n,
-				extent=comp_extent, levels=ctr_level(comp_n, lvls[:2]),
-				zorder=4, cmap=plt.cm.winter_r)
+			    if overplot_comp_contour:
+				contours = ax_temp.contour(
+				    comp_y_centers, comp_x_centers, comp_n,
+				    extent=comp_extent, levels=ctr_level(comp_n, lvls[:2]),
+				    zorder=5, cmap=plt.cm.winter_r)
+			    else:
+				contours = ax_temp.contourf(
+				    comp_y_centers, comp_x_centers, comp_n,
+				    extent=comp_extent, levels=ctr_level(comp_n, lvls[:2]),
+				    zorder=4, cmap=plt.cm.winter_r)
 			except Warning:
 			    warnings.warn(
 				"The routine could not find the contour of the " +
@@ -1202,11 +1224,12 @@ def plot_triangle(
 			ax_temp.axis([x_range[second_index][0], x_range[second_index][1],
 			    x_range[index][0], x_range[index][1]])
 
-                    fig_temp.savefig(
-                        info.folder+'plots/{0}_2d_{1}-{2}.{3}'.format(
-                            info.folder.split('/')[-2],
-                            info.ref_names[index],
-                            info.ref_names[second_index], info.extension))
+			fig_temp.savefig(
+			    info.folder+'plots/{0}-vs-{1}_2d_{2}-{3}.{4}'.format(
+				info.folder.split('/')[-2],
+				comp_folder.split('/')[-2],
+				info.ref_names[index],
+				info.ref_names[second_index], info.extension))
 
                     # store the coordinates of the points for further
                     # plotting.
@@ -1286,17 +1309,24 @@ def plot_triangle(
 
     print '-----------------------------------------------'
     print '--> Saving figures to .{0} files'.format(info.extension)
-    if plot_2d:
-        fig2d.savefig(
-            info.folder+'plots/{0}_triangle.{1}'.format(
-                info.folder.split('/')[-2], info.extension), bbox_inches=0, )
     if comp:
+	if plot_2d:
+	    fig2d.savefig(
+		info.folder+'plots/{0}-vs-{1}_triangle.{2}'.format(
+		    info.folder.split('/')[-2],
+		    comp_folder.split('/')[-2], info.extension),
+		bbox_inches=0, )
         fig1d.savefig(
-            info.folder+'plots/{0}-vs-{1}.{2}'.format(
+            info.folder+'plots/{0}-vs-{1}_1d.{2}'.format(
                 info.folder.split('/')[-2],
                 comp_folder.split('/')[-2], info.extension),
             bbox_inches=0)
     else:
+	if plot_2d:
+	    fig2d.savefig(
+		info.folder+'plots/{0}_triangle.{1}'.format(
+		    info.folder.split('/')[-2], info.extension),
+		bbox_inches=0, )
         fig1d.savefig(
             info.folder+'plots/{0}_1d.{1}'.format(
                 info.folder.split('/')[-2], info.extension),

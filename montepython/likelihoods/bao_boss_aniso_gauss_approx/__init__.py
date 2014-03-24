@@ -64,7 +64,7 @@ class bao_boss_aniso_gauss_approx(Likelihood):
             chi2 += ((theo_DA - self.DA_in_Mpc[i]) / self.DA_error[i]) ** 2
             chi2 += ((theo_H - self.H_in_km_per_s_per_Mpc[i]) / self.H_error[i]) ** 2
             # account for cross correlation
-            #chi2 += 2 * self.cross_corr[i] * (theo_DA - self.DA_in_Mpc[i]) * (theo_H - self.H_in_km_per_s_per_Mpc[i]) / self.DA_error[i] / self.H_error[i]
+            chi2 += 2 * self.cross_corr[i] * (theo_DA - self.DA_in_Mpc[i]) * (theo_H - self.H_in_km_per_s_per_Mpc[i]) / self.DA_error[i] / self.H_error[i]
 
         # return ln(L)
         lkl = - 0.5 * chi2
