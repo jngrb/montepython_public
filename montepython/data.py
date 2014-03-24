@@ -654,7 +654,7 @@ class Data(object):
         # The try: except: syntax ensures that the first call
         for elem in self.get_mcmc_parameters(['cosmo']):
             # infer h from Omega_Lambda and delete Omega_Lambda
-            if elem == 'Omega_Lambda':
+            if elem == 'Omega_Lambda' and not ('Omega_fld' in self.get_mcmc_parameters(['derived'])):
                 omega_b = self.cosmo_arguments['omega_b']
                 omega_cdm = self.cosmo_arguments['omega_cdm']
                 Omega_Lambda = self.cosmo_arguments['Omega_Lambda']
