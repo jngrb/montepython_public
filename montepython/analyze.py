@@ -762,8 +762,9 @@ def plot_triangle(
     """
 
     # If comparison is asked, don't plot 2d levels
+    # unless explicitely wanted by specifying '-all'
     if command_line.comp is not None:
-        plot_2d = False
+        plot_2d = command_line.subplot
         comp = True
         comp_done = False
     else:
@@ -918,10 +919,10 @@ def plot_triangle(
                 # For the names in common, the following line will not
                 # output an error. Then compute the comparative
                 # histogram
-                ii = comp_ref_names.index(
+                comp_index = comp_ref_names.index(
                     info.plotted_parameters[i])
                 comp_hist, comp_bin_edges = np.histogram(
-                    comp_chain[:, ii+2], bins=bin_number,
+                    comp_chain[:, comp_index+2], bins=bin_number,
                     weights=comp_chain[:, 0], normed=False)
                 comp_bincenters = 0.5*(
                     comp_bin_edges[1:]+comp_bin_edges[:-1])
@@ -959,7 +960,7 @@ def plot_triangle(
             else:
                 for elem in comp_bounds:
                     for j in (0, 1):
-                        elem[j] -= comp_mean[ii]
+                        elem[j] -= comp_mean[comp_index]
 
         # plotting
         if plot_2d:
@@ -996,19 +997,19 @@ def plot_triangle(
 
         if comp_done:
             # complex variation of intervals
-            ii = comp_ref_names.index(info.plotted_parameters[i])
-            if comp_x_range[ii][0] > x_range[index][0]:
-                comp_ticks[ii][0] = ticks[index][0]
-                comp_x_range[ii][0] = x_range[index][0]
-            if comp_x_range[ii][1] < x_range[index][1]:
-                comp_ticks[ii][2] = ticks[index][2]
-                comp_x_range[ii][1] = x_range[index][1]
-            comp_ticks[ii][1] = (
-                comp_x_range[ii][1]+comp_x_range[ii][0])/2.
-            ax1d.set_xticks(comp_ticks[ii])
-            ax1d.set_xticklabels(['%.3g' % s for s in comp_ticks[ii]],
+            comp_index = comp_ref_names.index(info.plotted_parameters[i])
+            if comp_x_range[comp_index][0] > x_range[index][0]:
+                comp_ticks[comp_index][0] = ticks[index][0]
+                comp_x_range[comp_index][0] = x_range[index][0]
+            if comp_x_range[comp_index][1] < x_range[index][1]:
+                comp_ticks[comp_index][2] = ticks[index][2]
+                comp_x_range[comp_index][1] = x_range[index][1]
+            comp_ticks[comp_index][1] = (
+                comp_x_range[comp_index][1]+comp_x_range[comp_index][0])/2.
+            ax1d.set_xticks(comp_ticks[comp_index])
+            ax1d.set_xticklabels(['%.3g' % s for s in comp_ticks[comp_index]],
                                  fontsize=ticksize1d)
-            ax1d.axis([comp_x_range[ii][0], comp_x_range[ii][1], 0, 1.05])
+            ax1d.axis([comp_x_range[comp_index][0], comp_x_range[comp_index][1], 0, 1.05])
 
         ax1d.plot(
             interp_grid, interp_hist, color='black', linewidth=2, ls='-')
@@ -1016,9 +1017,13 @@ def plot_triangle(
             ax1d.plot(
                 interp_comp_grid, interp_comp_hist, color='red',
                 linewidth=2, ls='-')
+	    if plot_2d:
+		ax2d.plot(
+		    interp_comp_grid, interp_comp_hist, color='blue',
+		    linewidth=2, ls='-')
 
         # mean likelihood (optional, if comparison, it will not be printed)
-        if plot_2d and command_line.mean_likelihood:
+        if not comp and command_line.mean_likelihood:
             try:
                 lkl_mean, _ = np.histogram(
                     chain[:, index+2],
@@ -1028,8 +1033,9 @@ def plot_triangle(
                 lkl_mean /= lkl_mean.max()
                 interp_lkl_mean, interp_grid = cubic_interpolation(
                     info, lkl_mean, bincenters)
-                ax2d.plot(interp_grid, interp_lkl_mean, color='red',
-                          ls='--', lw=2)
+		if plot_2d:
+		  ax2d.plot(interp_grid, interp_lkl_mean, color='red',
+			    ls='--', lw=2)
                 ax1d.plot(interp_grid, interp_lkl_mean, color='red',
                           ls='--', lw=4)
             except:
@@ -1106,6 +1112,45 @@ def plot_triangle(
                             info.plotted_parameters[j]))
                     pass
 
+		if comp_done:
+		    # i.e. comp_index is valid
+		    try:
+			# For the names in common, the following line will not
+			# output an error. Then compute the comparative
+			# histogram
+			comp_second_index = comp_ref_names.index(
+			    info.plotted_parameters[j])
+			comp_n, comp_xedges, comp_yedges = np.histogram2d(
+			    comp_chain[:, comp_index+2], comp_chain[:, comp_second_index+2],
+			    weights=comp_chain[:, 0], bins=(bin_number, bin_number),
+			    normed=False)
+			comp_extent = [comp_x_range[comp_second_index][0],
+			    comp_x_range[comp_second_index][1],
+			    comp_x_range[comp_index][0], comp_x_range[comp_index][1]]
+			comp_x_centers = 0.5*(comp_xedges[1:]+comp_xedges[:-1])
+			comp_y_centers = 0.5*(comp_yedges[1:]+comp_yedges[:-1])
+			comp_done_other = True
+		    except ValueError:
+			# If the name was not found, return the error. This will be
+			# then plotted at the end
+			comp_done_other = False
+
+		    if comp_done_other:
+			try:
+			    contours = ax2dsub.contourf(
+				comp_y_centers, comp_x_centers, comp_n,
+				extent=comp_extent, levels=ctr_level(comp_n, lvls[:2]),
+				zorder=4, cmap=plt.cm.winter_r)
+			except Warning:
+			    warnings.warn(
+				"The routine could not find the contour of the " +
+				"'%s-%s' 2d-plot (using the comparison data)" % (
+				    info.plotted_parameters[i],
+				    info.plotted_parameters[j]))
+			    pass
+			ax2dsub.axis([x_range[second_index][0], x_range[second_index][1],
+			    x_range[index][0], x_range[index][1]])
+
                 if command_line.subplot is True:
                     # Store the individual 2d plots
                     fig_temp = plt.figure(3, figsize=(6, 6))
@@ -1140,6 +1185,22 @@ def plot_triangle(
                                 info.plotted_parameters[i],
                                 info.plotted_parameters[j]))
                         pass
+
+		    if comp_done_other:
+			try:
+			    contours = ax_temp.contourf(
+				comp_y_centers, comp_x_centers, comp_n,
+				extent=comp_extent, levels=ctr_level(comp_n, lvls[:2]),
+				zorder=4, cmap=plt.cm.winter_r)
+			except Warning:
+			    warnings.warn(
+				"The routine could not find the contour of the " +
+				"'%s-%s' 2d-plot (using the comparison data)" % (
+				    info.plotted_parameters[i],
+				    info.plotted_parameters[j]))
+			    pass
+			ax_temp.axis([x_range[second_index][0], x_range[second_index][1],
+			    x_range[index][0], x_range[index][1]])
 
                     fig_temp.savefig(
                         info.folder+'plots/{0}_2d_{1}-{2}.{3}'.format(
@@ -1186,11 +1247,11 @@ def plot_triangle(
 
             ax1d = fig1d.add_subplot(
                 num_lines, num_columns, i+1, yticks=[])
-            ii = comp_ref_names.index(
+            comp_index = comp_ref_names.index(
                 comp_plotted_parameters[i-len(info.plotted_parameters)])
 
             comp_hist, comp_bin_edges = np.histogram(
-                comp_chain[:, ii+2], bins=bin_number,
+                comp_chain[:, comp_index+2], bins=bin_number,
                 weights=comp_chain[:, 0], normed=False)
             comp_bincenters = 0.5*(comp_bin_edges[1:]+comp_bin_edges[:-1])
             interp_comp_hist, interp_comp_grid = cubic_interpolation(
@@ -1204,14 +1265,14 @@ def plot_triangle(
             else:
                 for elem in comp_bounds:
                     for j in (0, 1):
-                        elem[j] -= comp_mean[ii]
-            ax1d.set_xticks(comp_ticks[ii])
-            ax1d.set_xticklabels(['%.3g' % s for s in comp_ticks[ii]],
+                        elem[j] -= comp_mean[comp_index]
+            ax1d.set_xticks(comp_ticks[comp_index])
+            ax1d.set_xticklabels(['%.3g' % s for s in comp_ticks[comp_index]],
                                  fontsize=ticksize1d)
-            ax1d.axis([comp_x_range[ii][0], comp_x_range[ii][1], 0, 1.05])
+            ax1d.axis([comp_x_range[comp_index][0], comp_x_range[comp_index][1], 0, 1.05])
             ax1d.set_title(
                 '%s= $%.3g^{+%.3g}_{%.3g}$' % (
-                    comp_tex_names[ii], comp_mean[ii], comp_bounds[0][1],
+                    comp_tex_names[comp_index], comp_mean[comp_index], comp_bounds[0][1],
                     comp_bounds[0][0]), fontsize=fontsize1d)
             ax1d.plot(interp_comp_grid, interp_comp_hist, color='red',
                       linewidth=2, ls='-')
