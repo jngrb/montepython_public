@@ -1,0 +1,18 @@
+# Defines a 3D multimodal gaussian likelihood for the so-called distance priors
+# -------------------------------------------
+
+distance_priors.data_directory = os.path.join(data.path['data'], 'distance_priors')
+
+# The variables are, in order, omega_b*h**2, 100*theta_star, ns, R, ln(10**10 As)
+# where R = sqrt(Omega_m H_0**2)*d_A(z_star)*1000/c (if d_A is in Mpc and H0 in Mpc/(km/s))
+
+# you can give strings to a file in distance_priors.data_directory;
+# or the array and matrix, respectively
+
+# base_w_TTTEEE
+distance_priors.centre1 = 'base_w_TTTEEE_mean.txt'
+distance_priors.covmat1 = 'base_w_TTTEEE_covmat.txt'
+
+# base_w_TTTEEE + curvature
+#distance_priors.centre2 = 67.0, 2.225e-2, 0.0120
+#distance_priors.covmat2 = [[    0.1, 2e-5, 2e-4], [2e-5,   2e-7, 2.4e-7], [ 2e-4, 2.4e-7,   5e-6]]
