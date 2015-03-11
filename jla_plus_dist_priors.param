@@ -16,9 +16,15 @@ data.experiments=['JLA', 'distance_priors']
 
 
 # Cosmological parameters list
-data.parameters['Omega_cdm'] = [0.2562,  None, None, 0.008,     1, 'cosmo']
-data.parameters['H0']        = [67.802,   None, None, 1.2,       1,   'cosmo']
-#data.parameters['A_s']       = [2.2177,     0, None, 0.055, 1.e-9, 'cosmo']
+data.parameters['omega_b']   = [2.2253,  None, None,  0.028,  0.01, 'cosmo']
+#data.parameters['Omega_cdm'] = [0.2562,  None, None, 0.008,      1, 'cosmo']
+# 0.2562 * 0.7**2 = 0.125538
+#data.parameters['omega_cdm'] = [0.11919, None, None, 0.0027,     1, 'cosmo']
+data.parameters['omega_cdm'] = [0.12554, None, None, 0.0027,     1, 'cosmo']
+#data.parameters['Omega_k']   = [0,       -0.5,  0.5,    0.1,     1, 'cosmo']
+data.parameters['H0']        = [67.802,  None, None,    1.2,     1, 'cosmo']
+#data.parameters['w_fld']     = [-1.0,    -1.5,  0.5,    1.2,     1, 'cosmo']
+#data.parameters['A_s']       = [2.2177,     0, None, 0.055,  1.e-9, 'cosmo']
 
 # Nuisance
 data.parameters['alpha']   = [0.15 ,  None, None, 0.001, 1, 'nuisance']
@@ -28,11 +34,17 @@ data.parameters['Delta_M'] = [-0.10,  None, None, 0.004, 1, 'nuisance']
 
 # Derived parameter list
 data.parameters['Omega_m']      = [0,   -1,   -1, 0, 1, 'derived']
+#data.parameters['Omega_Lambda'] = [0,   -1,   -1, 0, 1, 'derived']
+#data.parameters['h']            = [0, None, None, 0, 1, 'derived']
 data.parameters['ln10^{10}A_s'] = [0, None, None, 0, 1, 'derived']
+data.parameters['100*theta_s']  = [0, None, None, 0, 1, 'derived']
+data.parameters['da_rec']       = [0, None, None, 0, 1, 'derived']
+data.parameters['n_s']          = [0,    0, None, 0, 1, 'derived']
 
 
 data.cosmo_arguments['Omega_b'] = 0.0454 # 0.022253/0.7**2
 data.cosmo_arguments['A_s'] = 2.2177e-9
+data.cosmo_arguments['n_s'] = 0.96229
 
 #------ Mcmc parameters ----
 # Number of steps taken, by default (overwritten by the -N command)

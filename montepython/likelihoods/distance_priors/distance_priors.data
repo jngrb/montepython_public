@@ -10,7 +10,7 @@ distance_priors.data_directory = os.path.join(data.path['data'], 'distance_prior
 # or the array and matrix, respectively
 
 # base_w_TTTEEE
-distance_priors.centre1 = 'base_w_TTTEEE_mean.txt'
+distance_priors.centre1 = 'base_w_TTTEEE_means.txt'
 distance_priors.covmat1 = 'base_w_TTTEEE_covmat.txt'
 
 # base_w_TTTEEE + curvature
