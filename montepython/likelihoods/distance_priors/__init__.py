@@ -21,15 +21,22 @@ class distance_priors(Likelihood):
         self.inv_covmat1 = np.matrix(self.covmat1).I
         # FIXME: do the same for centre2,3 and covmat2,3
 
+        # !DEBUG OUT!
+        #print self.centre1
+
     def loglkl(self, cosmo, data):
-        H0, ob, Om, ns, theta, da_rec, logAs = (
+        H0, ob, Om, ns, theta, ra_rec, logAs = (
             data.mcmc_parameters[p]['current']*data.mcmc_parameters[p]['scale']
-            for p in ['H0', 'omega_b', 'Omega_m', 'n_s', '100*theta_s', 'da_rec', 'ln10^{10}A_s'])
-        R = math.sqrt(Om*H0**2) * da_rec * 1e6 / conts.c # Gpc to Mpc => factor of 1000; 1/(m/s) to 1/(km/s) => factor of 1000
+            for p in ['H0', 'omega_b', 'Omega_m', 'n_s', '100*theta_s', 'ra_rec', 'ln10^{10}A_s'])
+        # NOTE: ra_rec is in Mpc
+        R = math.sqrt(Om*H0**2) * ra_rec * 1e3 / conts.c # 1/(m/s) to 1/(km/s) => factor of 1000
 
         # The variables are, in order, omega_b*h**2, 100*theta_star, ns, R, ln(10**10 As)
         # where R = sqrt(Omega_m H_0**2)*d_A(z_star)*1000/c (if d_A is in Gpc and H0 in (km/s)/Mpc)
         cur_data = [ob, theta, ns, R, logAs]
+
+        # !DEBUG OUT!
+        #print cur_data
 
         # Modes
         loglkl = 0
