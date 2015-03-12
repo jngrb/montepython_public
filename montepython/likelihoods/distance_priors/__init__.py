@@ -20,6 +20,8 @@ class distance_priors(Likelihood):
             self.covmat1 = np.genfromtxt(filepath)
         self.inv_covmat1 = np.matrix(self.covmat1).I
         # FIXME: do the same for centre2,3 and covmat2,3
+        print self.inv_covmat1 * np.matrix(self.covmat1)
+        print np.matrix(self.covmat1) * self.inv_covmat1
 
         # !DEBUG OUT!
         #print self.centre1

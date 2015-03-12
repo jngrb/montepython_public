@@ -9,10 +9,14 @@ distance_priors.data_directory = os.path.join(data.path['data'], 'distance_prior
 # you can give strings to a file in distance_priors.data_directory;
 # or the array and matrix, respectively
 
+# base_TTTEEE
+distance_priors.centre1 = 'base_plikHM_TTTEEE_lowTEB_means.txt'
+distance_priors.covmat1 = 'base_plikHM_TTTEEE_lowTEB_covmat.txt'
+
 # base_w_TTTEEE
-distance_priors.centre1 = 'base_w_TTTEEE_means.txt'
-distance_priors.covmat1 = 'base_w_TTTEEE_covmat.txt'
+distance_priors.centre2 = 'base_w_plikHM_TTTEEE_lowTEB_means.txt'
+distance_priors.covmat2 = 'base_w_plikHM_TTTEEE_lowTEB_covmat.txt'
 
 # base_w_TTTEEE + curvature
-#distance_priors.centre2 = 67.0, 2.225e-2, 0.0120
-#distance_priors.covmat2 = [[    0.1, 2e-5, 2e-4], [2e-5,   2e-7, 2.4e-7], [ 2e-4, 2.4e-7,   5e-6]]
+#distance_priors.centre3 = 67.0, 2.225e-2, 0.0120
+#distance_priors.covmat3 = [[    0.1, 2e-5, 2e-4], [2e-5,   2e-7, 2.4e-7], [ 2e-4, 2.4e-7,   5e-6]]
