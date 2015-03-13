@@ -23,9 +23,9 @@ data.experiments=['distance_priors']
 #Omega_fld: [0.68443123955906671, 0.009142309826221337]
 #tau: [0.079233719841385983, 0.01736503705019479]
 
-# Cosmological parameters list
-data.parameters['omega_b']      = [2.22253, None,  None,  0.016,  0.01, 'cosmo']
-data.parameters['omega_cdm']    = [0.11983, None,  None, 0.0015,     1, 'cosmo']
+# Cosmological parameters list (now slowly being adopted to the each-parameter-at-a-time runs)
+#data.parameters['omega_b']      = [2.22527, None,  None,  0.010,  0.01, 'cosmo']
+#data.parameters['omega_cdm']    = [0.11983, None,  None, 0.0015,     1, 'cosmo']
 #data.parameters['H0']           = [67.27,   40.0, 100.0,   0.7,     1, 'cosmo']
 # Use Omega_Lambda here instead of H0 because of bad degeneracies of H0 with other parameters
 data.parameters['Omega_Lambda'] = [0.68443,    0,  None, 0.0092,     1, 'cosmo']
@@ -47,7 +47,10 @@ data.parameters['ra_rec']       = [0, None,  None, 0, 1, 'derived']
 
 # Fixed parameters
 
+data.parameters['omega_b']      = [2.22527, 0,  None, 0,  0.01, 'cosmo']
+data.parameters['omega_cdm']    = [0.11983,  0, None, 0,     1, 'cosmo']
 #data.parameters['Omega_Lambda'] = [0,       0,   -1, 0,     0, 'cosmo']
+#data.parameters['Omega_Lambda'] = [0.68443,  0, None, 0,     1, 'cosmo']
 data.parameters['tau_reio']     = [0.07923,  0,   -1, 0,     1, 'cosmo']
 data.parameters['n_s']          = [0.96445,  0,   -1, 0,     1, 'cosmo']
 data.parameters['A_s']          = [2.2068,   0, None, 0, 1.e-9, 'cosmo']
