@@ -38,8 +38,8 @@ class distance_priors(Likelihood):
         cur_data = np.array([ob, theta, ns, R, logAs])
 
         # !DEBUG OUT!
-        print self.centre1
-        print cur_data
+        #print self.centre1
+        #print cur_data
 
         # Modes
         loglkl = 0
@@ -50,6 +50,6 @@ class distance_priors(Likelihood):
             #diffvec = np.matrix([x-mu for x, mu in zip(cur_data, centre)])
             diffvec = np.matrix(cur_data - centre)
             # !DEBUG OUT!
-            print diffvec
+            #print diffvec
             loglkl += -0.5 * (np.dot(diffvec, np.dot(inv_covmat, diffvec.T)))[0,0]
         return loglkl
