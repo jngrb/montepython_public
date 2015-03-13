@@ -35,10 +35,11 @@ class distance_priors(Likelihood):
 
         # The variables are, in order, omega_b*h**2, 100*theta_star, ns, R, ln(10**10 As)
         # where R = sqrt(Omega_m H_0**2)*d_A(z_star)*1000/c (if d_A is in Gpc and H0 in (km/s)/Mpc)
-        cur_data = [ob, theta, ns, R, logAs]
+        cur_data = np.array([ob, theta, ns, R, logAs])
 
         # !DEBUG OUT!
-        #print cur_data
+        print self.centre1
+        print cur_data
 
         # Modes
         loglkl = 0
@@ -46,6 +47,9 @@ class distance_priors(Likelihood):
                                       #[self.inv_covmat1, self.inv_covmat2, self.inv_covmat3]):
         for centre, inv_covmat in zip([self.centre1],
                                       [self.inv_covmat1]):
-            diffvec = np.matrix([x-mu for x, mu in zip(cur_data, centre)])
+            #diffvec = np.matrix([x-mu for x, mu in zip(cur_data, centre)])
+            diffvec = np.matrix(cur_data - centre)
+            # !DEBUG OUT!
+            print diffvec
             loglkl += -0.5 * (np.dot(diffvec, np.dot(inv_covmat, diffvec.T)))[0,0]
         return loglkl
