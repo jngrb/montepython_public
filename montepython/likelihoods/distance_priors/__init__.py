@@ -34,10 +34,12 @@ class distance_priors(Likelihood):
         R = math.sqrt(Om*H0**2) * ra_rec * 1e3 / conts.c # 1/(m/s) to 1/(km/s) => factor of 1000
 
         # The variables are, in order, Omega_b*h**2, 100*theta_star, ns, R, ln(10**10 As)
-        # where R = sqrt(Omega_m H_0**2)*d_A(z_star)*1000/c (if d_A is in Gpc and H0 in (km/s)/Mpc)
+        # where R = sqrt(Omega_m H_0**2)*d_A(z_star)*1e6/c (if d_A is in Gpc and H0 in (km/s)/Mpc)
         cur_data = np.array([ob, theta, ns, R, logAs])
 
         # !DEBUG OUT!
+        fid_data = np.array([0.0222253, 1.040346, 0.96445, 1.748745, 3.094129])
+        print fid_data
         #print self.centre1
         #print cur_data
 
@@ -49,7 +51,15 @@ class distance_priors(Likelihood):
                                       [self.inv_covmat1]):
             #diffvec = np.matrix([x-mu for x, mu in zip(cur_data, centre)])
             diffvec = np.matrix(cur_data - centre)
+
             # !DEBUG OUT!
             #print diffvec
+            diffvec_fid = np.matrix(fid_data - centre)
+            print diffvec_fid
+
             loglkl += -0.5 * (np.dot(diffvec, np.dot(inv_covmat, diffvec.T)))[0,0]
+
+            # !DEBUG OUT!
+            print -0.5 * (np.dot(diffvec_fid, np.dot(inv_covmat, diffvec_fid.T)))[0,0]
+
         return loglkl
