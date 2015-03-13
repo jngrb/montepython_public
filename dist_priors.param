@@ -1,0 +1,79 @@
+#------Experiments to test (separated with commas)-----
+
+# valid options are (so far): acbar, bicep, boomerang, cbi,
+# hst, quad, sn, spt, fake_planck_bluebook,
+# euclid_pk, euclid_lensing
+# and clik_fake_planck (for Planck members)
+
+data.experiments=['distance_priors']
+
+#------ Parameter list -------
+# data.parameters[class name] = [mean, min, max, 1-sigma, scale, role]
+# - if min max irrelevant, put to -1 or None (if you want a boundary of -1, use -1.0)
+# - if fixed, put 1-sigma to 0
+# - if scale irrelevant, put to 1, otherwise to the appropriate factor
+# - role is either 'cosmo', 'nuisance' or 'derived'
+
+# central values of base_plikHM_TTTEEE_lowTEB
+#omega_b = Omega_b h**2: [0.02225266454787897, 0.0001573247489812517]
+#omega_cdm = Omega_cdm h**2: [0.11983376032864468, 0.0014718226924488012]
+#H0: [67.26898045871782, 0.6598441634103457]
+#10^9 A_s: [2.206808087364212, 0.07421955007133764]
+#n_s: [0.96449215769069163, 0.004894778234631438]
+#Omega_fld: [0.68443123955906671, 0.009142309826221337]
+#tau: [0.079233719841385983, 0.01736503705019479]
+
+# Cosmological parameters list
+data.parameters['omega_b']      = [2.22253, None,  None,  0.016,  0.01, 'cosmo']
+data.parameters['omega_cdm']    = [0.11983, None,  None, 0.0015,     1, 'cosmo']
+#data.parameters['H0']           = [67.27,   40.0, 100.0,   0.7,     1, 'cosmo']
+# Use Omega_Lambda here instead of H0 because of bad degeneracies of H0 with other parameters
+data.parameters['Omega_Lambda'] = [0.68443,    0,  None, 0.0092,     1, 'cosmo']
+#data.parameters['w0_fld']       = [-1.0,    -1.5,   0.5,    0.1,     1, 'cosmo']
+#data.parameters['tau_reio']     = [0.09463,    0,    -1,  0.013,     1, 'cosmo']
+#data.parameters['A_s']          = [2.2068,     0,  None,  0.075, 1.e-9, 'cosmo']
+#data.parameters['n_s']          = [0.96445,    0,    -1, 0.0074,     1, 'cosmo']
+
+# Derived parameter list
+data.parameters['z_reio']       = [0,   -1,    -1, 0, 1, 'derived']
+data.parameters['H0']           = [0, 40.0, 100.0, 0, 1, 'derived']
+#data.parameters['Omega_Lambda'] = [0,   0,     -1, 0, 1, 'derived']
+#data.parameters['Omega_fld']    = [0,   0,     -1, 0, 1, 'derived']
+data.parameters['YHe']          = [0,   -1,    -1, 0, 1, 'derived']
+data.parameters['Omega_m']      = [0,   -1,    -1, 0, 1, 'derived']
+data.parameters['ln10^{10}A_s'] = [0, None,  None, 0, 1, 'derived']
+data.parameters['100*theta_s']  = [0, None,  None, 0, 1, 'derived']
+data.parameters['ra_rec']       = [0, None,  None, 0, 1, 'derived']
+
+# Fixed parameters
+
+#data.parameters['Omega_Lambda'] = [0,       0,   -1, 0,     0, 'cosmo']
+data.parameters['tau_reio']     = [0.07923,  0,   -1, 0,     1, 'cosmo']
+data.parameters['n_s']          = [0.96445,  0,   -1, 0,     1, 'cosmo']
+data.parameters['A_s']          = [2.2068,   0, None, 0, 1.e-9, 'cosmo']
+#data.parameters['wa_fld']       = [0,      -1.5, 1.5, 0,     1, 'cosmo']
+#data.parameters['cs_fld']       = [0,      -1.5, 1.5, 0,     1, 'cosmo']
+
+# Other cosmo parameters (fixed parameters, precision parameters, etc.)
+
+data.cosmo_arguments['sBBN file'] = data.path['cosmo']+'/bbn/sBBN.dat'
+# k_pivot for COSMOMC Planck chains was also 0.05
+data.cosmo_arguments['k_pivot'] = 0.05
+
+# The base model features two massless
+# and one massive neutrino with m=0.06eV.
+# The settings below ensures that these
+# three species contribute equally
+# to the radiation density at large
+# redshift, with a total of Neff=3.046
+data.cosmo_arguments['N_eff'] = 2.03351
+data.cosmo_arguments['N_ncdm'] = 1
+data.cosmo_arguments['m_ncdm'] = 0.06
+data.cosmo_arguments['T_ncdm'] = 0.715985
+
+#------ Mcmc parameters ----
+# Number of steps taken, by default (overwritten by the -N command)
+data.N=10
+# Number of accepted steps before writing to file the chain. Larger means less
+# access to disc, but this is not so much time consuming.
+data.write_step=5

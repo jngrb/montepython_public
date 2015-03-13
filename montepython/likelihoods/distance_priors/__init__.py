@@ -33,7 +33,7 @@ class distance_priors(Likelihood):
         # NOTE: ra_rec is in Mpc
         R = math.sqrt(Om*H0**2) * ra_rec * 1e3 / conts.c # 1/(m/s) to 1/(km/s) => factor of 1000
 
-        # The variables are, in order, omega_b*h**2, 100*theta_star, ns, R, ln(10**10 As)
+        # The variables are, in order, Omega_b*h**2, 100*theta_star, ns, R, ln(10**10 As)
         # where R = sqrt(Omega_m H_0**2)*d_A(z_star)*1000/c (if d_A is in Gpc and H0 in (km/s)/Mpc)
         cur_data = np.array([ob, theta, ns, R, logAs])
 
